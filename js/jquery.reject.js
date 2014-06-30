@@ -104,6 +104,8 @@ $.reject = function(options) {
 		fadeInTime: 'fast',
 		// Fade out time on close ('slow','medium','fast' or integer in ms)
 		fadeOutTime: 'fast',
+		// sets popups ability to scroll for larger websites, set to false for non-scrolling pages
+        scroll: true,
 
 		// Google Analytics Link Tracking (Optional)
 		// Set to true to enable
@@ -412,23 +414,25 @@ $.reject = function(options) {
 	$('body').append(element.hide().fadeIn(opts.fadeInTime));
 
 	// Handle window resize/scroll events and update overlay dimensions
-	$(window).bind('resize scroll',function() {
-		var size = _pageSize(); // Get size
+	if (opts.scroll === true) {
+		$(window).bind('resize scroll',function() {
+			var size = _pageSize(); // Get size
 
-		// Update overlay dimensions based on page size
-		$('#jr_overlay').css({
-			width: size[0],
-			height: size[1]
+			// Update overlay dimensions based on page size
+			$('#jr_overlay').css({
+				width: size[0],
+				height: size[1]
+			});
+
+			var scroll = _scrollSize(); // Get page scroll
+
+			// Update modal position based on scroll
+			$('#jr_wrap').css({
+				top: scroll[1] + (size[3]/4),
+				left: scroll[0]
+			});
 		});
-
-		var scroll = _scrollSize(); // Get page scroll
-
-		// Update modal position based on scroll
-		$('#jr_wrap').css({
-			top: scroll[1] + (size[3]/4),
-			left: scroll[0]
-		});
-	});
+	}
 
 	// Add optional ESC Key functionality
 	if (opts.closeESC) {
